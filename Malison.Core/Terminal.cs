@@ -8,7 +8,7 @@ namespace Malison.Core
 {
     public class Terminal : TerminalBase
     {
-        public override Vec Size { get { return mCharacters.Size; } }
+        public override Vector2D Size { get { return mCharacters.Size; } }
 
         public Terminal(int width, int height)
             : base()
@@ -19,12 +19,12 @@ namespace Malison.Core
             mCharacters.Fill(new Character(' '));
         }
 
-        protected override Character GetValueCore(Vec pos)
+        protected override Character GetValueCore(Vector2D pos)
         {
             return mCharacters[pos];
         }
 
-        protected override bool SetValueCore(Vec pos, Character value)
+        protected override bool SetValueCore(Vector2D pos, Character value)
         {
             // don't do anything if the value doesn't change
             if (mCharacters[pos].Equals(value)) return false;

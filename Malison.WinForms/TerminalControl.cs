@@ -172,7 +172,7 @@ namespace Malison.WinForms
             if (e.KeyCode == Keys.Right) e.IsInputKey = true;
         }
 
-        private void InvalidateCharacter(Vec pos)
+        private void InvalidateCharacter(Vector2D pos)
         {
             int width = mGlyphSheet.Width;
             int height = mGlyphSheet.Height;

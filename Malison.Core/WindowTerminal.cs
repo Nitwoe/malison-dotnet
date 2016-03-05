@@ -15,14 +15,14 @@ namespace Malison.Core
             mBounds = bounds;
         }
 
-        public override Vec Size { get { return mBounds.Size; } }
+        public override Vector2D Size { get { return mBounds.Size; } }
 
-        protected override Character GetValueCore(Vec pos)
+        protected override Character GetValueCore(Vector2D pos)
         {
             return mParent.Get(pos + mBounds.Position);
         }
 
-        protected override bool SetValueCore(Vec pos, Character value)
+        protected override bool SetValueCore(Vector2D pos, Character value)
         {
             if (!mBounds.Size.Contains(pos)) return false;
 

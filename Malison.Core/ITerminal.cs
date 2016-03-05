@@ -23,8 +23,8 @@ namespace Malison.Core
         void Write(string text);
         void Write(CharacterString text);
 
-        void Scroll(Vec offset, Func<Vec, Character> scrollOnCallback);
-        void Scroll(int x, int y, Func<Vec, Character> scrollOnCallback);
+        void Scroll(Vector2D offset, Func<Vector2D, Character> scrollOnCallback);
+        void Scroll(int x, int y, Func<Vector2D, Character> scrollOnCallback);
 
         void Clear();
 
@@ -37,13 +37,13 @@ namespace Malison.Core
         ITerminal this[TermColor foreColor, TermColor backColor] { get; }
         ITerminal this[ColorPair color] { get; }
 
-        ITerminal this[Vec pos] { get; }
+        ITerminal this[Vector2D pos] { get; }
         ITerminal this[int x, int y] { get; }
         ITerminal this[Rect rect] { get; }
-        ITerminal this[Vec pos, Vec size] { get; }
+        ITerminal this[Vector2D pos, Vector2D size] { get; }
         ITerminal this[int x, int y, int width, int height] { get; }
 
-        void Set(Vec pos, Character value);
+        void Set(Vector2D pos, Character value);
         void Set(int x, int y, Character value);
     }
 }

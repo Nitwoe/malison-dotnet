@@ -10,12 +10,12 @@ namespace Malison.Core
     {
         event EventHandler<CharacterEventArgs> CharacterChanged;
 
-        Vec Size { get; }
+        Vector2D Size { get; }
 
         TermColor ForeColor { get; }
         TermColor BackColor { get; }
 
-        Character Get(Vec pos);
+        Character Get(Vector2D pos);
         Character Get(int x, int y);
     }
 }

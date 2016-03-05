@@ -22,36 +22,36 @@ namespace Malison.Core
 
         public event EventHandler<CharacterEventArgs> CharacterChanged;
 
-        public abstract Vec Size { get; }
+        public abstract Vector2D Size { get; }
 
         public TermColor ForeColor { get; private set; }
         public TermColor BackColor { get; private set; }
 
-        public Character Get(Vec pos)
+        public Character Get(Vector2D pos)
         {
             return GetValueCore(FlipNegativePosition(pos));
         }
 
         public Character Get(int x, int y)
         {
-            return Get(new Vec(x, y));
+            return Get(new Vector2D(x, y));
         }
 
         #endregion
 
         #region ITerminal Members
 
-        public void Set(Vec pos, Character value)
+        public void Set(Vector2D pos, Character value)
         {
             SetInternal(FlipNegativePosition(pos), value);
         }
 
         public void Set(int x, int y, Character value)
         {
-            Set(new Vec(x, y), value);
+            Set(new Vector2D(x, y), value);
         }
 
-        public ITerminal this[Vec pos]
+        public ITerminal this[Vector2D pos]
         {
             // if we aren't given a size, go all the way to the bottom-right corner of the terminal
             get { return this[pos, Size - pos]; }
@@ -59,7 +59,7 @@ namespace Malison.Core
 
         public ITerminal this[int x, int y]
         {
-            get { return this[new Vec(x, y)]; }
+            get { return this[new Vector2D(x, y)]; }
         }
 
         public ITerminal this[Rect rect]
@@ -70,7 +70,7 @@ namespace Malison.Core
             }
         }
 
-        public ITerminal this[Vec pos, Vec size]
+        public ITerminal this[Vector2D pos, Vector2D size]
         {
             get { return this[new Rect(pos, size)]; }
         }
@@ -110,7 +110,7 @@ namespace Malison.Core
 
         public void Write(Character character)
         {
-            Set(Vec.Zero, character);
+            Set(Vector2D.Zero, character);
         }
 
         public void Write(string text)
@@ -120,21 +120,21 @@ namespace Malison.Core
 
         public void Write(CharacterString text)
         {
-            Vec pos = Vec.Zero;
+            Vector2D pos = Vector2D.Zero;
 
             CheckBounds(pos.X, pos.Y);
 
             foreach (Character c in text)
             {
                 Set(pos, c);
-                pos += new Vec(1, 0);
+                pos += new Vector2D(1, 0);
 
                 // don't run past edge
                 if (pos.X >= Size.X) break;
             }
         }
 
-        public void Scroll(Vec offset, Func<Vec, Character> scrollOnCallback)
+        public void Scroll(Vector2D offset, Func<Vector2D, Character> scrollOnCallback)
         {
             int xStart = 0;
             int xEnd = Size.X;
@@ -182,8 +182,8 @@ namespace Malison.Core
             {
                 for (int x = xStart; x != xEnd; x += xStep)
                 {
-                    Vec to = new Vec(x, y);
-                    Vec from = to - offset;
+                    Vector2D to = new Vector2D(x, y);
+                    Vector2D from = to - offset;
 
                     if (bounds.Contains(from))
                     {
@@ -199,9 +199,9 @@ namespace Malison.Core
             }
         }
 
-        public void Scroll(int x, int y, Func<Vec, Character> scrollOnCallback)
+        public void Scroll(int x, int y, Func<Vector2D, Character> scrollOnCallback)
         {
-            Scroll(new Vec(x, y), scrollOnCallback);
+            Scroll(new Vector2D(x, y), scrollOnCallback);
         }
 
         public void Clear()
@@ -212,7 +212,7 @@ namespace Malison.Core
         public void Fill(Glyph glyph)
         {
             Character character = new Character(glyph, ForeColor, BackColor);
-            foreach (Vec pos in new Rect(Size))
+            foreach (Vector2D pos in new Rect(Size))
             {
                 Set(pos, character);
             }
@@ -225,7 +225,7 @@ namespace Malison.Core
 
         public void DrawBox(DrawBoxOptions options)
         {
-            Vec pos = Vec.Zero;
+            Vector2D pos = Vector2D.Zero;
 
             if (Size.X == 1)
             {
@@ -277,14 +277,14 @@ namespace Malison.Core
                 WriteLineChar(pos + Size - 1, bottomRight);
 
                 // top and bottom edges
-                foreach (Vec iter in Rect.Row(pos.X + 1, pos.Y, Size.X - 2))
+                foreach (Vector2D iter in Rect.Row(pos.X + 1, pos.Y, Size.X - 2))
                 {
                     WriteLineChar(iter, horizontal);
                     WriteLineChar(iter.OffsetY(Size.Y - 1), horizontal);
                 }
 
                 // left and right edges
-                foreach (Vec iter in Rect.Column(pos.X, pos.Y + 1, Size.Y - 2))
+                foreach (Vector2D iter in Rect.Column(pos.X, pos.Y + 1, Size.Y - 2))
                 {
                     WriteLineChar(iter, vertical);
                     WriteLineChar(iter.OffsetX(Size.X - 1), vertical);
@@ -294,7 +294,7 @@ namespace Malison.Core
 
         #endregion
 
-        internal bool SetInternal(Vec pos, Character value)
+        internal bool SetInternal(Vector2D pos, Character value)
         {
             if (SetValueCore(pos, value))
             {
@@ -310,7 +310,7 @@ namespace Malison.Core
         /// </summary>
         /// <param name="pos">The position of the character to retrieve. Must be in bounds.</param>
         /// <returns>The character at that position.</returns>
-        protected abstract Character GetValueCore(Vec pos);
+        protected abstract Character GetValueCore(Vector2D pos);
 
         /// <summary>
         /// Override this to set the <see cref="Character"/> at the given position in the terminal.
@@ -318,11 +318,11 @@ namespace Malison.Core
         /// <param name="pos">The position of the character to write.</param>
         /// <param name="value">The character to write to the terminal.</param>
         /// <returns><c>true</c> if the character is different from what was already there.</returns>
-        protected abstract bool SetValueCore(Vec pos, Character value);
+        protected abstract bool SetValueCore(Vector2D pos, Character value);
 
         internal abstract ITerminal CreateWindowCore(TermColor foreColor, TermColor backColor, Rect bounds);
 
-        private Vec FlipNegativePosition(Vec pos)
+        private Vector2D FlipNegativePosition(Vector2D pos)
         {
             // negative coordinates mean from the right/bottom edge
             if (pos.X < 0) pos.X = Size.X + pos.X;
@@ -331,7 +331,7 @@ namespace Malison.Core
             return pos;
         }
 
-        private void DrawHorizontalLine(Vec pos, int length, DrawBoxOptions options)
+        private void DrawHorizontalLine(Vector2D pos, int length, DrawBoxOptions options)
         {
             // figure out which glyphs to use
             Glyph left = Glyph.BarRight;
@@ -369,13 +369,13 @@ namespace Malison.Core
             WriteLineChar(pos.OffsetX(length - 1), right);
 
             // middle
-            foreach (Vec iter in Rect.Row(pos.X + 1, pos.Y, length - 2))
+            foreach (Vector2D iter in Rect.Row(pos.X + 1, pos.Y, length - 2))
             {
                 WriteLineChar(iter, middle);
             }
         }
 
-        private void DrawVerticalLine(Vec pos, int length, DrawBoxOptions options)
+        private void DrawVerticalLine(Vector2D pos, int length, DrawBoxOptions options)
         {
             // figure out which glyphs to use
             Glyph top = Glyph.BarDown;
@@ -413,13 +413,13 @@ namespace Malison.Core
             WriteLineChar(pos.OffsetY(length - 1), bottom);
 
             // middle
-            foreach (Vec iter in Rect.Column(pos.X, pos.Y + 1, length - 2))
+            foreach (Vector2D iter in Rect.Column(pos.X, pos.Y + 1, length - 2))
             {
                 WriteLineChar(iter, middle);
             }
         }
 
-        private void WriteLineChar(Vec pos, Glyph glyph)
+        private void WriteLineChar(Vector2D pos, Glyph glyph)
         {
             this[pos][ForeColor, BackColor].Write(glyph);
         }
@@ -447,7 +447,7 @@ namespace Malison.Core
             if (y + height > Size.Y) throw new ArgumentOutOfRangeException("height");
         }
 
-        private void CheckBounds(Vec pos, Vec size)
+        private void CheckBounds(Vector2D pos, Vector2D size)
         {
             CheckBounds(pos.X, pos.Y, size.X, size.Y);
         }
