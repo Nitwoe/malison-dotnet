@@ -18,7 +18,7 @@ namespace Malison.Core
     public interface ITerminal : IReadableTerminal
     {
         void Write(char ascii);
-        void Write(Glyph glyph);
+        void Write(int code);
         void Write(Character character);
         void Write(string text);
         void Write(CharacterString text);
@@ -28,10 +28,7 @@ namespace Malison.Core
 
         void Clear();
 
-        void Fill(Glyph glyph);
-
-        void DrawBox();
-        void DrawBox(DrawBoxOptions options);
+        void Fill(int code);
 
         ITerminal this[TermColor foreColor] { get; }
         ITerminal this[TermColor foreColor, TermColor backColor] { get; }

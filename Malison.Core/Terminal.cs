@@ -10,6 +10,12 @@ namespace Malison.Core
     {
         public override Vector2D Size { get { return mCharacters.Size; } }
 
+        public Terminal(int width, int height, Encoding encoding)
+            :this(width, height)
+        {
+            Encoding = encoding;
+        }
+
         public Terminal(int width, int height)
             : base()
         {

@@ -58,7 +58,6 @@
     <Compile Include="CharacterEventArgs.cs" />
     <Compile Include="CharacterString.cs" />
     <Compile Include="ColorPair.cs" />
-    <Compile Include="Glyph.cs" />
     <Compile Include="IReadableTerminal.cs" />
     <Compile Include="ITerminal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

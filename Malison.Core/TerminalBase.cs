@@ -16,6 +16,7 @@ namespace Malison.Core
         {
             ForeColor = foreColor;
             BackColor = backColor;
+            Encoding = Encoding.Unicode;
         }
 
         #region IReadableTerminal Members
@@ -40,6 +41,13 @@ namespace Malison.Core
         #endregion
 
         #region ITerminal Members
+
+        public Encoding Encoding
+        {
+            get;
+            protected set;
+        }
+
 
         public void Set(Vector2D pos, Character value)
         {
@@ -100,12 +108,12 @@ namespace Malison.Core
 
         public void Write(char ascii)
         {
-            Write(new Character(ascii, ForeColor, BackColor));
+            Write(new Character(Character.ToCode(ascii, Encoding), ForeColor, BackColor));
         }
 
-        public void Write(Glyph glyph)
+        public void Write(int code)
         {
-            Write(new Character(glyph, ForeColor, BackColor));
+            Write(new Character(code, ForeColor, BackColor));
         }
 
         public void Write(Character character)
@@ -115,7 +123,7 @@ namespace Malison.Core
 
         public void Write(string text)
         {
-            Write(new CharacterString(text, ForeColor, BackColor));
+            Write(new CharacterString(text, ForeColor, BackColor, Encoding));
         }
 
         public void Write(CharacterString text)
@@ -206,89 +214,15 @@ namespace Malison.Core
 
         public void Clear()
         {
-            Fill(Glyph.Space);
+            Fill(0);
         }
 
-        public void Fill(Glyph glyph)
+        public void Fill(int code)
         {
-            Character character = new Character(glyph, ForeColor, BackColor);
+            Character character = new Character(code, ForeColor, BackColor);
             foreach (Vector2D pos in new Rect(Size))
             {
                 Set(pos, character);
-            }
-        }
-
-        public void DrawBox()
-        {
-            DrawBox(DrawBoxOptions.Default);
-        }
-
-        public void DrawBox(DrawBoxOptions options)
-        {
-            Vector2D pos = Vector2D.Zero;
-
-            if (Size.X == 1)
-            {
-                DrawVerticalLine(pos, Size.Y, options);
-            }
-            else if (Size.Y == 1)
-            {
-                DrawHorizontalLine(pos, Size.X, options);
-            }
-            else
-            {
-                // figure out which glyphs to use
-                Glyph topLeft;
-                Glyph topRight;
-                Glyph bottomLeft;
-                Glyph bottomRight;
-                Glyph horizontal;
-                Glyph vertical;
-
-                if ((options & DrawBoxOptions.DoubleLines) == DrawBoxOptions.DoubleLines)
-                {
-                    topLeft = Glyph.BarDoubleDownRight;
-                    topRight = Glyph.BarDoubleDownLeft;
-                    bottomLeft = Glyph.BarDoubleUpRight;
-                    bottomRight = Glyph.BarDoubleUpLeft;
-                    horizontal = Glyph.BarDoubleLeftRight;
-                    vertical = Glyph.BarDoubleUpDown;
-                }
-                else
-                {
-                    topLeft = Glyph.BarDownRight;
-                    topRight = Glyph.BarDownLeft;
-                    bottomLeft = Glyph.BarUpRight;
-                    bottomRight = Glyph.BarUpLeft;
-                    horizontal = Glyph.BarLeftRight;
-                    vertical = Glyph.BarUpDown;
-                }
-
-                // top left corner
-                WriteLineChar(pos, topLeft);
-
-                // top right corner
-                WriteLineChar(pos.OffsetX(Size.X - 1), topRight);
-
-                // bottom left corner
-                WriteLineChar(pos.OffsetY(Size.Y - 1), bottomLeft);
-
-                // bottom right corner
-                WriteLineChar(pos + Size - 1, bottomRight);
-
-                // top and bottom edges
-                foreach (Vector2D iter in Rect.Row(pos.X + 1, pos.Y, Size.X - 2))
-                {
-                    WriteLineChar(iter, horizontal);
-                    WriteLineChar(iter.OffsetY(Size.Y - 1), horizontal);
-                }
-
-                // left and right edges
-                foreach (Vector2D iter in Rect.Column(pos.X, pos.Y + 1, Size.Y - 2))
-                {
-                    WriteLineChar(iter, vertical);
-                    WriteLineChar(iter.OffsetX(Size.X - 1), vertical);
-                }
             }
         }
 
@@ -330,98 +264,10 @@ namespace Malison.Core
 
             return pos;
         }
-
-        private void DrawHorizontalLine(Vector2D pos, int length, DrawBoxOptions options)
+        
+        private void WriteLineChar(Vector2D pos, int code)
         {
-            // figure out which glyphs to use
-            Glyph left = Glyph.BarRight;
-            Glyph middle = Glyph.BarLeftRight;
-            Glyph right = Glyph.BarLeft;
-
-            if ((options & DrawBoxOptions.DoubleLines) == DrawBoxOptions.DoubleLines)
-            {
-                middle = Glyph.BarDoubleLeftRight;
-
-                if ((options & DrawBoxOptions.ContinueLines) == DrawBoxOptions.ContinueLines)
-                {
-                    left = Glyph.BarDoubleLeftRight;
-                    right = Glyph.BarDoubleLeftRight;
-                }
-                else
-                {
-                    left = Glyph.BarDoubleRight;
-                    right = Glyph.BarDoubleLeft;
-                }
-            }
-            else
-            {
-                if ((options & DrawBoxOptions.ContinueLines) == DrawBoxOptions.ContinueLines)
-                {
-                    left = Glyph.BarLeftRight;
-                    right = Glyph.BarLeftRight;
-                }
-            }
-
-            // left edge
-            WriteLineChar(pos, left);
-
-            // right edge
-            WriteLineChar(pos.OffsetX(length - 1), right);
-
-            // middle
-            foreach (Vector2D iter in Rect.Row(pos.X + 1, pos.Y, length - 2))
-            {
-                WriteLineChar(iter, middle);
-            }
-        }
-
-        private void DrawVerticalLine(Vector2D pos, int length, DrawBoxOptions options)
-        {
-            // figure out which glyphs to use
-            Glyph top = Glyph.BarDown;
-            Glyph middle = Glyph.BarUpDown;
-            Glyph bottom = Glyph.BarUp;
-
-            if ((options & DrawBoxOptions.DoubleLines) == DrawBoxOptions.DoubleLines)
-            {
-                middle = Glyph.BarDoubleUpDown;
-
-                if ((options & DrawBoxOptions.ContinueLines) == DrawBoxOptions.ContinueLines)
-                {
-                    top = Glyph.BarDoubleUpDown;
-                    bottom = Glyph.BarDoubleUpDown;
-                }
-                else
-                {
-                    top = Glyph.BarDoubleDown;
-                    bottom = Glyph.BarDoubleUp;
-                }
-            }
-            else
-            {
-                if ((options & DrawBoxOptions.ContinueLines) == DrawBoxOptions.ContinueLines)
-                {
-                    top = Glyph.BarUpDown;
-                    bottom = Glyph.BarUpDown;
-                }
-            }
-
-            // top edge
-            WriteLineChar(pos, top);
-
-            // bottom edge
-            WriteLineChar(pos.OffsetY(length - 1), bottom);
-
-            // middle
-            foreach (Vector2D iter in Rect.Column(pos.X, pos.Y + 1, length - 2))
-            {
-                WriteLineChar(iter, middle);
-            }
-        }
-
-        private void WriteLineChar(Vector2D pos, Glyph glyph)
-        {
-            this[pos][ForeColor, BackColor].Write(glyph);
+            this[pos][ForeColor, BackColor].Write(code);
         }
 
         private void CheckBounds(int x, int y)

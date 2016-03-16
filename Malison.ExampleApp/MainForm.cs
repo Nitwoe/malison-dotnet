@@ -23,54 +23,29 @@ namespace Malison.ExampleApp
         {
             base.OnLoad(e);
 
+            TerminalControl.GlyphSheet = new GlyphSheet(Properties.Resources.cp437_16x16, 16, 16);
+            Terminal = new Terminal(80, 30, Encoding.GetEncoding(437));
+
             Terminal[2, 2].Write("Hi, this is an example app.");
 
             Terminal[2, 4].Write("Here are some lines and boxes:");
-            Terminal[4, 6, 6, 3][TermColor.Red].DrawBox();
-            Terminal[12, 6, 6, 3][TermColor.Green].DrawBox(DrawBoxOptions.DoubleLines);
 
             ITerminal blueTerm = Terminal[TermColor.Blue];
-            blueTerm[20, 6, 1, 3].DrawBox(DrawBoxOptions.None);
-            blueTerm[21, 6, 1, 3].DrawBox(DrawBoxOptions.ContinueLines);
-            blueTerm[22, 6, 1, 3].DrawBox(DrawBoxOptions.DoubleLines);
-            blueTerm[23, 6, 1, 3].DrawBox(DrawBoxOptions.DoubleLines | DrawBoxOptions.ContinueLines);
 
             Terminal[2, 10].Write("Because this is tailored for games, there's some fun glyphs in here:");
-            Glyph[] glyphs = new Glyph[]
+            int[] glyphs = new int[]
             {
-                Glyph.ArrowDown,
-                Glyph.ArrowLeft,
-                Glyph.ArrowRight,
-                Glyph.ArrowUp,
-                Glyph.Box,
-                Glyph.Bullet,
-                Glyph.Dark,
-                Glyph.DarkFill,
-                Glyph.Dashes,
-                Glyph.Door,
-                Glyph.Face,
-                Glyph.Grass,
-                Glyph.Gray,
-                Glyph.GrayFill,
-                Glyph.Hill,
-                Glyph.HorizontalBars,
-                Glyph.HorizontalBarsFill,
-                Glyph.Light,
-                Glyph.LightFill,
-                Glyph.Mountains,
-                Glyph.Solid,
-                Glyph.SolidFill,
-                Glyph.Tombstone,
-                Glyph.TreeConical,
-                Glyph.TreeDots,
-                Glyph.TreeRound,
-                Glyph.TriangleDown,
-                Glyph.TriangleLeft,
-                Glyph.TriangleRight,
-                Glyph.TriangleUp,
-                Glyph.TwoDots,
-                Glyph.VerticalBars,
-                Glyph.VerticalBarsFill
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
             };
 
             int x = 4;
@@ -85,8 +60,8 @@ namespace Malison.ExampleApp
             TermColor[] colors = (TermColor[])Enum.GetValues(typeof(TermColor));
             for (int i = 0; i < colors.Length; i++)
             {
-                Terminal[i + 3, 16][colors[i], TermColor.Black].Write(Glyph.Face);
-                Terminal[i + 3, 17][TermColor.Black, colors[i]].Write(Glyph.Face);
+                Terminal[i + 3, 16][colors[i], TermColor.Black].Write('a');
+                Terminal[i + 3, 17][TermColor.Black, colors[i]].Write('b');
             }
         }
     }
