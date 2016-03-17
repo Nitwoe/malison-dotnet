@@ -10,9 +10,9 @@ namespace Malison.Core
     {
         None          = 0x0,
         DoubleLines   = 0x1,
-        ContinueLines = 0x2,
+        SingleLines = 0x2,
 
-        Default = ContinueLines
+        Default = SingleLines
     }
 
     public interface ITerminal : IReadableTerminal
@@ -29,6 +29,9 @@ namespace Malison.Core
         void Clear();
 
         void Fill(int code);
+
+        void DrawBox();
+        void DrawBox(DrawBoxOptions options);
 
         ITerminal this[TermColor foreColor] { get; }
         ITerminal this[TermColor foreColor, TermColor backColor] { get; }

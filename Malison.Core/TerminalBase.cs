@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -108,7 +108,7 @@ namespace Malison.Core
 
         public void Write(char ascii)
         {
-            Write(new Character(Character.ToCode(ascii, Encoding), ForeColor, BackColor));
+            Write(new Character(Character.Encode(ascii, Encoding), ForeColor, BackColor));
         }
 
         public void Write(int code)
@@ -226,6 +226,79 @@ namespace Malison.Core
             }
         }
 
+        public void DrawBox()
+        {
+            DrawBox(DrawBoxOptions.Default);
+        }
+
+        public void DrawBox(DrawBoxOptions options)
+        {
+            Vector2D pos = Vector2D.Zero;
+
+            if (Size.X == 1)
+            {
+                DrawVerticalLine(pos, Size.Y, options);
+            }
+            else if (Size.Y == 1)
+            {
+                DrawHorizontalLine(pos, Size.X, options);
+            }
+            else
+            {
+                int topLeft;
+                int topRight;
+                int bottomLeft;
+                int bottomRight;
+                int horizontal;
+                int vertical;
+
+                if ((options & DrawBoxOptions.DoubleLines) == DrawBoxOptions.DoubleLines)
+                {
+                    topLeft = Character.Encode('╔', Encoding);
+                    topRight = Character.Encode('╗', Encoding);
+                    bottomLeft = Character.Encode('╚', Encoding);
+                    bottomRight = Character.Encode('╝', Encoding);
+                    horizontal = Character.Encode('═', Encoding);
+                    vertical = Character.Encode('║', Encoding);
+                }
+                else
+                {                
+                    topLeft = Character.Encode('┌', Encoding);
+                    topRight = Character.Encode('┐', Encoding);
+                    bottomLeft = Character.Encode('└', Encoding);
+                    bottomRight = Character.Encode('┘', Encoding);
+                    horizontal = Character.Encode('─', Encoding);
+                    vertical = Character.Encode('│', Encoding);
+                }
+
+                // top left corner
+                WriteLineChar(pos, topLeft);
+
+                // top right corner
+                WriteLineChar(pos.OffsetX(Size.X - 1), topRight);
+
+                // bottom left corner
+                WriteLineChar(pos.OffsetY(Size.Y - 1), bottomLeft);
+
+                // bottom right corner
+                WriteLineChar(pos + Size - 1, bottomRight);
+
+                // top and bottom edges
+                foreach (Vector2D iter in Rect.Row(pos.X + 1, pos.Y, Size.X - 2))
+                {
+                    WriteLineChar(iter, horizontal);
+                    WriteLineChar(iter.OffsetY(Size.Y - 1), horizontal);
+                }
+
+                // left and right edges
+                foreach (Vector2D iter in Rect.Column(pos.X, pos.Y + 1, Size.Y - 2))
+                {
+                    WriteLineChar(iter, vertical);
+                    WriteLineChar(iter.OffsetX(Size.X - 1), vertical);
+                }
+            }
+        }
+
         #endregion
 
         internal bool SetInternal(Vector2D pos, Character value)
@@ -256,6 +329,47 @@ namespace Malison.Core
 
         internal abstract ITerminal CreateWindowCore(TermColor foreColor, TermColor backColor, Rect bounds);
 
+        private void DrawHorizontalLine(Vector2D pos, int length, DrawBoxOptions options)
+        {
+            // figure out which code to use
+            int lineChar;
+
+            if ((options & DrawBoxOptions.DoubleLines) == DrawBoxOptions.DoubleLines)
+            {
+                lineChar = Character.Encode('═', Encoding);
+            }
+            else
+            {
+                lineChar = Character.Encode('─', Encoding);
+            }
+
+            // middle
+            foreach (Vector2D iter in Rect.Row(pos.X, pos.Y, length - 1))
+            {
+                WriteLineChar(iter, lineChar);
+            }
+        }
+
+        private void DrawVerticalLine(Vector2D pos, int length, DrawBoxOptions options)
+        {
+            // figure out which code to use
+            int lineChar;
+
+            if ((options & DrawBoxOptions.DoubleLines) == DrawBoxOptions.DoubleLines)
+            {
+                lineChar = Character.Encode('║', Encoding);
+            }
+            else
+            {
+                lineChar = Character.Encode('│', Encoding);
+            }
+
+            // middle
+            foreach (Vector2D iter in Rect.Column(pos.X, pos.Y, length - 1))
+            {
+                WriteLineChar(iter, lineChar);
+            }
+        }
         private Vector2D FlipNegativePosition(Vector2D pos)
         {
             // negative coordinates mean from the right/bottom edge

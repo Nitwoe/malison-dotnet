@@ -13,6 +13,7 @@ namespace Malison.Core
         {
             mParent = parent;
             mBounds = bounds;
+            Encoding = parent.Encoding;
         }
 
         public override Vector2D Size { get { return mBounds.Size; } }

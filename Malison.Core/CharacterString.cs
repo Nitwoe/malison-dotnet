@@ -68,7 +68,7 @@ namespace Malison.Core
                     }
                     else
                     {
-                        Add(new Character(Character.ToCode(c, encoding), foreColor, backColor));
+                        Add(new Character(Character.Encode(c, encoding), foreColor, backColor));
                     }
                 }
             }

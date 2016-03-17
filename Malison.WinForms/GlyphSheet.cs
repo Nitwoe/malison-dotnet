@@ -41,9 +41,8 @@ namespace Malison.WinForms
             Bitmap characterBitmap = new Bitmap(Width, Height);
             using (Graphics g = Graphics.FromImage(characterBitmap))
             {
-                byte glyph = (byte)character.Code;
-                int column = glyph % GlyphsPerRow;
-                int row = glyph / GlyphsPerRow;
+                int column = character.Code % GlyphsPerRow;
+                int row = character.Code / GlyphsPerRow;
 
                 Rectangle destRect = new Rectangle(0, 0, Width, Height);
 

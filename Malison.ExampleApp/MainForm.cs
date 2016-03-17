@@ -17,20 +17,24 @@ namespace Malison.ExampleApp
         public MainForm()
         {
             InitializeComponent();
+
+            TerminalControl.GlyphSheet = new GlyphSheet(Properties.Resources.cp437_16x16, 16, 16);
+            Terminal = new Terminal(80, 30, Encoding.GetEncoding(437));
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            TerminalControl.GlyphSheet = new GlyphSheet(Properties.Resources.cp437_16x16, 16, 16);
-            Terminal = new Terminal(80, 30, Encoding.GetEncoding(437));
-
             Terminal[2, 2].Write("Hi, this is an example app.");
 
             Terminal[2, 4].Write("Here are some lines and boxes:");
 
             ITerminal blueTerm = Terminal[TermColor.Blue];
+
+            Terminal[2, 6, 10, 3][TermColor.White].DrawBox();
+
+            Terminal[13, 6, 10, 3][TermColor.White].DrawBox(DrawBoxOptions.DoubleLines);
 
             Terminal[2, 10].Write("Because this is tailored for games, there's some fun glyphs in here:");
             int[] glyphs = new int[]

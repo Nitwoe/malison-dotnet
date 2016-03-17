@@ -24,18 +24,19 @@ namespace Malison.Core
         /// <returns></returns>
         public static int ToCode(char ascii)
         {
-            return ToCode(ascii, Encoding.Unicode);
+            return Encode(ascii, Encoding.Unicode);
         }
 
         /// <summary>
-        /// Gets the code represented by the given ASCII character.
+        /// Gets the code represented by the given character in given encoding.
         /// </summary>
         /// <param name="ascii"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public static int ToCode(char ascii, Encoding encoding)
+        public static int Encode(char ascii, Encoding encoding)
         {
-            return (int)(encoding.GetBytes(ascii.ToString())[0]);
+            char[] buffer = { ascii };
+            return (int)(encoding.GetBytes(buffer)[0]);
         }
 
         /// <summary>
@@ -76,15 +77,15 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns true if the <see cref="Glyph"/> for this Character is a non-visible
-        /// whitespace Glyph.
+        /// Returns true if the code for this Character is a non-visible
+        /// whitespace character.
         /// </summary>
         public bool IsWhitespace { get { return mCode == 0; } }
 
         /// <summary>
         /// Initializes a new Character.
         /// </summary>
-        /// <param name="glyph">Glyph used to draw the Character.</param>
+        /// <param name="code">Code used to draw the Character.</param>
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
         /// <param name="backColor">Background <see cref="TermColor"/> of the Character.</param>
         public Character(int code, TermColor foreColor, TermColor backColor)
@@ -97,7 +98,7 @@ namespace Malison.Core
         /// <summary>
         /// Initializes a new Character using the default background <see cref="TermColor"/>.
         /// </summary>
-        /// <param name="glyph">Glyph used to draw the Character.</param>
+        /// <param name="code">Code used to draw the Character.</param>
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
         public Character(int code, TermColor foreColor)
             : this(code, foreColor, DefaultBackColor)
@@ -108,7 +109,7 @@ namespace Malison.Core
         /// Initializes a new Character using the default background and foreground
         /// <see cref="TermColor"/>.
         /// </summary>
-        /// <param name="glyph">Glyph used to draw the Character.</param>
+        /// <param name="code">Code used to draw the Character.</param>
         public Character(int code)
             : this(code, DefaultForeColor)
         {
@@ -117,7 +118,7 @@ namespace Malison.Core
         /// <summary>
         /// Initializes a new Character.
         /// </summary>
-        /// <param name="ascii">ASCII representation of the <see cref="Glyph"/> used
+        /// <param name="ascii">ASCII representation of the code used
         /// to draw the Character.</param>
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
         /// <param name="backColor">Background <see cref="TermColor"/> of the Character.</param>
@@ -129,7 +130,7 @@ namespace Malison.Core
         /// <summary>
         /// Initializes a new Character using the default background <see cref="Color"/>.
         /// </summary>
-        /// <param name="ascii">ASCII representation of the <see cref="Glyph"/> used
+        /// <param name="ascii">ASCII representation of the code used
         /// to draw the Character.</param>
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
         public Character(char ascii, TermColor foreColor)
@@ -141,7 +142,7 @@ namespace Malison.Core
         /// Initializes a new Character using the default background and foreground
         /// <see cref="Color"/>.
         /// </summary>
-        /// <param name="ascii">ASCII representation of the <see cref="Glyph"/> used
+        /// <param name="ascii">ASCII representation of the code used
         /// to draw the Character.</param>
         public Character(char ascii)
             : this(Character.ToCode(ascii), DefaultForeColor)
