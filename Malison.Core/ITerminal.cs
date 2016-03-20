@@ -6,15 +6,6 @@ using Bramble.Core;
 
 namespace Malison.Core
 {
-    public enum DrawBoxOptions
-    {
-        None          = 0x0,
-        DoubleLines   = 0x1,
-        SingleLines = 0x2,
-
-        Default = SingleLines
-    }
-
     public interface ITerminal : IReadableTerminal
     {
         void Write(char ascii);

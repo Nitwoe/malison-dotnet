@@ -18,7 +18,10 @@ namespace Malison.ExampleApp
         {
             InitializeComponent();
 
+            // Initialize the terminal with a custom glyph sheet
             TerminalControl.GlyphSheet = new GlyphSheet(Properties.Resources.cp437_16x16, 16, 16);
+
+            // Initialize terminal with proper character encoding
             Terminal = new Terminal(80, 30, Encoding.GetEncoding(437));
         }
 
@@ -26,12 +29,10 @@ namespace Malison.ExampleApp
         {
             base.OnLoad(e);
 
-            Terminal[2, 2].Write("Hi, this is an example app.");
+            Terminal[2, 2].Write("Hi, this is an example app ☺");
 
             Terminal[2, 4].Write("Here are some lines and boxes:");
-
-            ITerminal blueTerm = Terminal[TermColor.Blue];
-
+            
             Terminal[2, 6, 10, 3][TermColor.White].DrawBox();
 
             Terminal[13, 6, 10, 3][TermColor.White].DrawBox(DrawBoxOptions.DoubleLines);

@@ -22,7 +22,7 @@ namespace Malison.Core
         /// </summary>
         /// <param name="ascii"></param>
         /// <returns></returns>
-        public static int ToCode(char ascii)
+        public static int Encode(char ascii)
         {
             return Encode(ascii, Encoding.Unicode);
         }
@@ -123,7 +123,7 @@ namespace Malison.Core
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
         /// <param name="backColor">Background <see cref="TermColor"/> of the Character.</param>
         public Character(char ascii, TermColor foreColor, TermColor backColor)
-            : this(Character.ToCode(ascii), foreColor, backColor)
+            : this(Character.Encode(ascii), foreColor, backColor)
         {
         }
 
@@ -134,7 +134,7 @@ namespace Malison.Core
         /// to draw the Character.</param>
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
         public Character(char ascii, TermColor foreColor)
-            : this(Character.ToCode(ascii), foreColor, DefaultBackColor)
+            : this(Character.Encode(ascii), foreColor, DefaultBackColor)
         {
         }
 
@@ -145,7 +145,7 @@ namespace Malison.Core
         /// <param name="ascii">ASCII representation of the code used
         /// to draw the Character.</param>
         public Character(char ascii)
-            : this(Character.ToCode(ascii), DefaultForeColor)
+            : this(Character.Encode(ascii), DefaultForeColor)
         {
         }
 

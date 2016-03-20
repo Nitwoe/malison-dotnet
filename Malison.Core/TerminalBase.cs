@@ -226,6 +226,11 @@ namespace Malison.Core
             }
         }
 
+        public void Fill(char ascii)
+        {
+            Fill(Character.Encode(ascii, Encoding));
+        }
+
         public void DrawBox()
         {
             DrawBox(DrawBoxOptions.Default);
