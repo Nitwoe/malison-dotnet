@@ -19,7 +19,7 @@ namespace Malison.ExampleApp
             InitializeComponent();
 
             // Initialize the terminal with a custom glyph sheet
-            TerminalControl.GlyphSheet = new GlyphSheet(Properties.Resources.cp437_16x16, 16, 16);
+            TerminalControl.GlyphSheet = new GlyphSheet(Properties.Resources.cp437_18x18, 16, 16);
 
             // Initialize terminal with proper character encoding
             Terminal = new Terminal(80, 30, Encoding.GetEncoding(437));
@@ -37,36 +37,73 @@ namespace Malison.ExampleApp
 
             Terminal[13, 6, 10, 3][TermColor.White].DrawBox(DrawBoxOptions.DoubleLines);
 
-            Terminal[2, 10].Write("Because this is tailored for games, there's some fun glyphs in here:");
-            int[] glyphs = new int[]
-            {
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10
-            };
+            Terminal[2, 10].Write("Here's a test of sample characters:");
 
-            int x = 4;
-            for (int i = 0; i < glyphs.Length; i++)
+            for (int i = 0; i < 20; i++)
             {
-                Terminal[x, 12][TermColor.Orange].Write(glyphs[i]);
-                x += 2;
+                Terminal[2 + i, 12][TermColor.Yellow].Write(i);
             }
 
             Terminal[2, 14].Write("Background and foreground colors are supported:");
 
-            TermColor[] colors = (TermColor[])Enum.GetValues(typeof(TermColor));
+            TermColor[] colors = TermColor.Analogous(TermColor.Red, 20).ToArray();
+
             for (int i = 0; i < colors.Length; i++)
             {
                 Terminal[i + 3, 16][colors[i], TermColor.Black].Write('a');
                 Terminal[i + 3, 17][TermColor.Black, colors[i]].Write('b');
+            }
+
+            Terminal[2, 20].Write("Alpha channel for colours is supported:");
+
+            for (int i = 0; i < 20; i++)
+            {
+                // Also supporting parsing from a string
+                Terminal[i + 3, 22][TermColor.Parse(String.Format("#c0ffee{0:X2}", 255/(i+1))), TermColor.Parse("#c0ffee").Negative()].Write('☻');
+            }
+
+            Terminal[2, 24].Write("Lightening and darkening functions:");
+
+            for (int i = 0; i < 20; i++)
+            {
+                Terminal[i + 3, 26][TermColor.Black.Lighter(1 / 20f * (i + 1))].Write('☻');
+                Terminal[i + 3, 27][TermColor.White.Darker(1 / 20f * (i + 1))].Write('☻');
+            }
+
+            TermColor source = TermColor.Blue.Lighter(0.2);
+            TermColor gradientDest = TermColor.Yellow.Lighter(0.2);
+
+            Terminal[39, 1, 40, 8].DrawBox();
+
+            Terminal[40, 2].Write("Source:");
+            Terminal[48, 2][TermColor.White, source].Write(' ');
+
+            Terminal[40, 4].Write("Triad example:");
+            colors = TermColor.Triad(source).ToArray();
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Terminal[40 + i, 5][TermColor.White, colors[i]].Write(' ');
+            } 
+            
+            Terminal[40, 6].Write("Tetrad example:");
+            colors = TermColor.Tetrad(source).ToArray();
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Terminal[40 + i, 7][TermColor.White, colors[i]].Write(' ');
+            }
+
+            Terminal[60, 4].Write("Analogous example:");
+            colors = TermColor.Analogous(source, 15).ToArray();
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Terminal[60 + i, 5][TermColor.White, colors[i]].Write(' ');
+            }
+
+            Terminal[60, 6].Write("Gradient example:");
+            colors = TermColor.Gradient(source, gradientDest, 15).ToArray();
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Terminal[60 + i, 7][TermColor.White, colors[i]].Write(' ');
             }
         }
     }

@@ -34,43 +34,15 @@ namespace Malison.Core
 
         /// <summary>
         /// Initializes a new CharacterString using the given string of ASCII characters.
-        /// Color escape codes will also be parsed out of the string.
         /// </summary>
         /// <param name="text"></param>
         public CharacterString(string text, TermColor foreColor, TermColor backColor, Encoding encoding)
         {
             TermColor originalForeColor = foreColor;
 
-            bool waitingForColor = false;
-
             foreach (char c in text)
-            {
-                // see if this character should be a color code
-                if (waitingForColor)
-                {
-                    if (c == '-')
-                    {
-                        // - means "return to original color"
-                        foreColor = originalForeColor;
-                    }
-                    else
-                    {
-                        foreColor = TermColors.FromEscapeChar(c);
-                    }
-                    waitingForColor = false;
-                }
-                else
-                {
-                    // handle color escape keys
-                    if (c == '^')
-                    {
-                        waitingForColor = true;
-                    }
-                    else
-                    {
-                        Add(new Character(Character.Encode(c, encoding), foreColor, backColor));
-                    }
-                }
+            { 
+                Add(new Character(Character.Encode(c, encoding), foreColor, backColor));
             }
         }
 
