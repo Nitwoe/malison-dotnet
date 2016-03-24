@@ -13,7 +13,7 @@ namespace Malison.WinForms
     public static class TermColorExtensions
     {
         /// <summary>
-        /// Converts the TermColour to System.Drawing.Color
+        /// Converts the Termcolor to System.Drawing.Color
         /// </summary>
         public static Color ToSystemColor(this TermColor color)
         {

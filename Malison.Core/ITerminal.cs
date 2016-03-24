@@ -26,7 +26,6 @@ namespace Malison.Core
 
         ITerminal this[TermColor foreColor] { get; }
         ITerminal this[TermColor foreColor, TermColor backColor] { get; }
-        ITerminal this[ColorPair color] { get; }
 
         ITerminal this[Vector2D pos] { get; }
         ITerminal this[int x, int y] { get; }

@@ -96,11 +96,6 @@ namespace Malison.Core
             }
         }
 
-        public ITerminal this[ColorPair color]
-        {
-            get { return this[color.Fore, color.Back]; }
-        }
-
         public ITerminal this[TermColor foreColor]
         {
             get { return this[foreColor, BackColor]; }

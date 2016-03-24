@@ -54,7 +54,7 @@ namespace Malison.ExampleApp
                 Terminal[i + 3, 17][TermColor.Black, colors[i]].Write('b');
             }
 
-            Terminal[2, 20].Write("Alpha channel for colours is supported:");
+            Terminal[2, 20].Write("Alpha channel for colors is supported:");
 
             for (int i = 0; i < 20; i++)
             {

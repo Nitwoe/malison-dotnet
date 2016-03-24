@@ -6,9 +6,9 @@ using System.Text;
 namespace Malison.Core
 {
     /// <summary>
-    /// Identifies a color that can be used in a terminal. An enumeration of
-    /// fixed colors is used here to avoid making Malison.Core dependent on
-    /// System.Drawing or some other assembly that provides a color type.
+    /// Identifies a color that can be used in a terminal.
+    /// Malison uses custom structure to contain color data in order to not
+    /// depend on System.Drawing or some other assemblies providing a color type.
     /// </summary>
     public struct TermColor
     {
@@ -101,7 +101,7 @@ namespace Malison.Core
             : this(Convert.ToByte(r * 255), Convert.ToByte(g * 255), Convert.ToByte(b * 255), Convert.ToByte(a * 255))
         { }
 
-        #region Basic colour helpers
+        #region Basic color helpers
 
         public static TermColor Black
         {
@@ -169,10 +169,10 @@ namespace Malison.Core
 
         #endregion
 
-        #region Colour utilities
+        #region Color utilities
         
         /// <summary>
-        /// Returns a new colour lightened by given <paramref name="amount"/>.
+        /// Returns a new color lightened by given <paramref name="amount"/>.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public static TermColor Lighten(TermColor source, double amount)
@@ -181,7 +181,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a new colour lightened by given <paramref name="amount"/>.
+        /// Returns a new color lightened by given <paramref name="amount"/>.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public TermColor Lighter(double amount)
@@ -190,16 +190,16 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a new colour darkened by given <paramref name="amount"/>.
+        /// Returns a new color darkened by given <paramref name="amount"/>.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public static TermColor Darken(TermColor source, double amount)
         {
-            return TermColor.FromHSLA(source.H, source.S, Math.Max(Math.Min(source.L - amount, 1), 0), source.A);
+            return TermColor.Lighten(source, -amount);
         }
 
         /// <summary>
-        /// Returns a new colour darkened by given <paramref name="amount"/>.
+        /// Returns a new color darkened by given <paramref name="amount"/>.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public TermColor Darker(double amount)
@@ -208,7 +208,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a new colour saturated by given <paramref name="amount"/>.
+        /// Returns a new color saturated by given <paramref name="amount"/>.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public static TermColor Saturate(TermColor source, double amount)
@@ -217,7 +217,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a new colour saturated by given <paramref name="amount"/>.
+        /// Returns a new color saturated by given <paramref name="amount"/>.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public TermColor Saturated(double amount)
@@ -226,16 +226,16 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a new colour desaturated by given <paramref name="amount"/>.
+        /// Returns a new color desaturated by given <paramref name="amount"/>.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public static TermColor Desaturate(TermColor source, double amount)
         {
-            return TermColor.FromHSLA(source.H, Math.Max(Math.Min(source.S - amount, 1), 0), source.L, source.A);
+            return TermColor.Saturate(source, -amount);
         }
 
         /// <summary>
-        /// Returns a new colour desaturated by given <paramref name="amount"/>.
+        /// Returns a new color desaturated by given <paramref name="amount"/>.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public TermColor Desaturated(double amount)
@@ -244,7 +244,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Return new grayscaled version based on given colour
+        /// Return new grayscaled version based on given color
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public static TermColor Grayscale(TermColor source)
@@ -253,7 +253,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Return new grayscaled colour based on this colour
+        /// Return new grayscaled color based on this color
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public TermColor Grayscaled()
@@ -262,7 +262,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a new colour which is a result of <paramref name="a"/> * 0.5 + <paramref name="b"/> * 0.5.
+        /// Returns a new color which is a result of <paramref name="a"/> * 0.5 + <paramref name="b"/> * 0.5.
         /// </summary>
         public static TermColor Blend(TermColor a, TermColor b)
         {
@@ -342,7 +342,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a palette of colours for transition between <paramref name="source"/> and <paramref name="destination"/> in N <paramref name="steps"/>
+        /// Returns a palette of colors for transition between <paramref name="source"/> and <paramref name="destination"/> in N <paramref name="steps"/>
         /// </summary>
         public static IEnumerable<TermColor> Gradient(TermColor source, TermColor destination, int steps)
         {
@@ -358,7 +358,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a triad of colours from given source
+        /// Returns a triad of colors from given source
         /// </summary>
         public static IEnumerable<TermColor> Triad(TermColor source)
         {
@@ -369,7 +369,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a tetrad of colours from given source
+        /// Returns a tetrad of colors from given source
         /// </summary>
         public static IEnumerable<TermColor> Tetrad(TermColor source)
         {
@@ -380,35 +380,23 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns a set of analogous colours
+        /// Returns a set of analogous colors
         /// </summary>
         public static IEnumerable<TermColor> Analogous(TermColor source, int size=6)
         {
-            TermColor baseColour = source;
+            TermColor basecolor = source;
 
             int step = 360/size;
 
-            for (int i = 0; i < size / 2; i++)
+            for (int i = 0; i < size; i++)
             {
-                double h = baseColour.H - (i + 1) * step;
-
-                if (h < 0)
-                    h += 360;
-
-                yield return TermColor.FromHSLA(h, baseColour.S, baseColour.L, baseColour.A);
-            }
-
-            yield return baseColour;
-
-            for (int i = 0; i < size / 2; i++)
-            {
-                double h = (baseColour.H + (i + 1) * step) % 360;
-                yield return TermColor.FromHSLA(h, baseColour.S, baseColour.L, baseColour.A);
+                double h = (basecolor.H + i * step) % 360;
+                yield return TermColor.FromHSLA(h, basecolor.S, basecolor.L, basecolor.A);
             }
         }
 
         /// <summary>
-        /// Returns complementary colour for this colour.
+        /// Returns complementary color for this color.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public TermColor Negative()
@@ -417,7 +405,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns complementary colour from given source.
+        /// Returns complementary color from given source.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public static TermColor Negate(TermColor source)
@@ -430,8 +418,8 @@ namespace Malison.Core
         #region Mathematical operators
 
         /// <summary>
-        /// Returns a sum of given colours.
-        /// This method leaves alpha channel from colour <paramref name="a"/> unaffected.
+        /// Returns a sum of given colors.
+        /// This method leaves alpha channel from color <paramref name="a"/> unaffected.
         /// </summary>
         public static TermColor operator +(TermColor a, TermColor b)
         {
@@ -439,8 +427,8 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Substracts colour <paramref name="b"/> from colour <paramref name="a"/>.
-        /// This method leaves alpha channel from colour <paramref name="a"/> unaffected.
+        /// Substracts color <paramref name="b"/> from color <paramref name="a"/>.
+        /// This method leaves alpha channel from color <paramref name="a"/> unaffected.
         /// </summary>
         public static TermColor operator -(TermColor a, TermColor b)
         {
@@ -448,8 +436,8 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns colour <paramref name="a"/> multiplied by colour <paramref name="b"/>.
-        /// This method leaves alpha channel from colour <paramref name="a"/> unaffected.
+        /// Returns color <paramref name="a"/> multiplied by color <paramref name="b"/>.
+        /// This method leaves alpha channel from color <paramref name="a"/> unaffected.
         /// </summary>
         public static TermColor operator *(TermColor a, TermColor b)
         {
@@ -457,7 +445,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns colour <paramref name="a"/> scaled by specified <paramref name="amount"/>.
+        /// Returns color <paramref name="a"/> scaled by specified <paramref name="amount"/>.
         /// This method leaves alpha channel unaffected.
         /// </summary>
         public static TermColor operator *(TermColor a, float amount)
@@ -468,7 +456,7 @@ namespace Malison.Core
         #endregion
 
         /// <summary>
-        /// Returns colour in hex string
+        /// Returns color in hex string
         /// </summary>
         public override string ToString()
         {
@@ -481,7 +469,7 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Creates a new colour from hex string in format of #rrggbb or #rrggbbaa
+        /// Creates a new color from hex string in format of #rrggbb or #rrggbbaa
         /// </summary>
         public static TermColor Parse(string hexString)
         {

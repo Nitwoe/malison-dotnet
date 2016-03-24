@@ -57,7 +57,6 @@
     <Compile Include="Character.cs" />
     <Compile Include="CharacterEventArgs.cs" />
     <Compile Include="CharacterString.cs" />
-    <Compile Include="ColorPair.cs" />
     <Compile Include="DrawBoxOptions.cs" />
     <Compile Include="IReadableTerminal.cs" />
     <Compile Include="ITerminal.cs" />
