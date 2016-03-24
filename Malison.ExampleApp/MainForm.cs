@@ -17,76 +17,93 @@ namespace Malison.ExampleApp
         public MainForm()
         {
             InitializeComponent();
+
+            // Initialize the terminal with a custom glyph sheet
+            TerminalControl.GlyphSheet = new GlyphSheet(Properties.Resources.cp437_18x18, 16, 16);
+
+            // Initialize terminal with proper character encoding
+            Terminal = new Terminal(80, 30, Encoding.GetEncoding(437));
         }
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
 
-            Terminal[2, 2].Write("Hi, this is an example app.");
+            Terminal[2, 2].Write("Hi, this is an example app ☺");
 
             Terminal[2, 4].Write("Here are some lines and boxes:");
-            Terminal[4, 6, 6, 3][TermColor.Red].DrawBox();
-            Terminal[12, 6, 6, 3][TermColor.Green].DrawBox(DrawBoxOptions.DoubleLines);
+            
+            Terminal[2, 6, 10, 3][TermColor.White].DrawBox();
 
-            ITerminal blueTerm = Terminal[TermColor.Blue];
-            blueTerm[20, 6, 1, 3].DrawBox(DrawBoxOptions.None);
-            blueTerm[21, 6, 1, 3].DrawBox(DrawBoxOptions.ContinueLines);
-            blueTerm[22, 6, 1, 3].DrawBox(DrawBoxOptions.DoubleLines);
-            blueTerm[23, 6, 1, 3].DrawBox(DrawBoxOptions.DoubleLines | DrawBoxOptions.ContinueLines);
+            Terminal[13, 6, 10, 3][TermColor.White].DrawBox(DrawBoxOptions.DoubleLines);
 
-            Terminal[2, 10].Write("Because this is tailored for games, there's some fun glyphs in here:");
-            Glyph[] glyphs = new Glyph[]
+            Terminal[2, 10].Write("Here's a test of sample characters:");
+
+            for (int i = 0; i < 20; i++)
             {
-                Glyph.ArrowDown,
-                Glyph.ArrowLeft,
-                Glyph.ArrowRight,
-                Glyph.ArrowUp,
-                Glyph.Box,
-                Glyph.Bullet,
-                Glyph.Dark,
-                Glyph.DarkFill,
-                Glyph.Dashes,
-                Glyph.Door,
-                Glyph.Face,
-                Glyph.Grass,
-                Glyph.Gray,
-                Glyph.GrayFill,
-                Glyph.Hill,
-                Glyph.HorizontalBars,
-                Glyph.HorizontalBarsFill,
-                Glyph.Light,
-                Glyph.LightFill,
-                Glyph.Mountains,
-                Glyph.Solid,
-                Glyph.SolidFill,
-                Glyph.Tombstone,
-                Glyph.TreeConical,
-                Glyph.TreeDots,
-                Glyph.TreeRound,
-                Glyph.TriangleDown,
-                Glyph.TriangleLeft,
-                Glyph.TriangleRight,
-                Glyph.TriangleUp,
-                Glyph.TwoDots,
-                Glyph.VerticalBars,
-                Glyph.VerticalBarsFill
-            };
-
-            int x = 4;
-            for (int i = 0; i < glyphs.Length; i++)
-            {
-                Terminal[x, 12][TermColor.Orange].Write(glyphs[i]);
-                x += 2;
+                Terminal[2 + i, 12][TermColor.Yellow].Write(i);
             }
 
             Terminal[2, 14].Write("Background and foreground colors are supported:");
 
-            TermColor[] colors = (TermColor[])Enum.GetValues(typeof(TermColor));
+            TermColor[] colors = TermColor.Analogous(TermColor.Red, 20).ToArray();
+
             for (int i = 0; i < colors.Length; i++)
             {
-                Terminal[i + 3, 16][colors[i], TermColor.Black].Write(Glyph.Face);
-                Terminal[i + 3, 17][TermColor.Black, colors[i]].Write(Glyph.Face);
+                Terminal[i + 3, 16][colors[i], TermColor.Black].Write('a');
+                Terminal[i + 3, 17][TermColor.Black, colors[i]].Write('b');
+            }
+
+            Terminal[2, 20].Write("Alpha channel for colors is supported:");
+
+            for (int i = 0; i < 20; i++)
+            {
+                // Also supporting parsing from a string
+                Terminal[i + 3, 22][TermColor.Parse(String.Format("#c0ffee{0:X2}", 255/(i+1))), TermColor.Parse("#c0ffee").Negative()].Write('☻');
+            }
+
+            Terminal[2, 24].Write("Lightening and darkening functions:");
+
+            for (int i = 0; i < 20; i++)
+            {
+                Terminal[i + 3, 26][TermColor.Black.Lighter(1 / 20f * (i + 1))].Write('☻');
+                Terminal[i + 3, 27][TermColor.White.Darker(1 / 20f * (i + 1))].Write('☻');
+            }
+
+            TermColor source = TermColor.Blue.Lighter(0.2);
+            TermColor gradientDest = TermColor.Yellow.Lighter(0.2);
+
+            Terminal[39, 1, 40, 8].DrawBox();
+
+            Terminal[40, 2].Write("Source:");
+            Terminal[48, 2][TermColor.White, source].Write(' ');
+
+            Terminal[40, 4].Write("Triad example:");
+            colors = TermColor.Triad(source).ToArray();
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Terminal[40 + i, 5][TermColor.White, colors[i]].Write(' ');
+            } 
+            
+            Terminal[40, 6].Write("Tetrad example:");
+            colors = TermColor.Tetrad(source).ToArray();
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Terminal[40 + i, 7][TermColor.White, colors[i]].Write(' ');
+            }
+
+            Terminal[60, 4].Write("Analogous example:");
+            colors = TermColor.Analogous(source, 15).ToArray();
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Terminal[60 + i, 5][TermColor.White, colors[i]].Write(' ');
+            }
+
+            Terminal[60, 6].Write("Gradient example:");
+            colors = TermColor.Gradient(source, gradientDest, 15).ToArray();
+            for (int i = 0; i < colors.Length; i++)
+            {
+                Terminal[60 + i, 7][TermColor.White, colors[i]].Write(' ');
             }
         }
     }

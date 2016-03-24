@@ -18,80 +18,31 @@ namespace Malison.Core
         public static TermColor DefaultBackColor { get { return TermColor.Black; } }
 
         /// <summary>
-        /// Gets the <see cref="Glyph"/> represented by the given ASCII character.
+        /// Gets the code represented by the given ASCII character.
         /// </summary>
         /// <param name="ascii"></param>
         /// <returns></returns>
-        public static Glyph ToGlyph(char ascii)
+        public static int Encode(char ascii)
         {
-            return (Glyph)(ascii - 32);
+            return Encode(ascii, Encoding.Unicode);
         }
 
         /// <summary>
-        /// Parses a Character from the given string formatted like:
-        /// <code>Glyph [ForeColor [BackColor]]</code>
-        /// "Glyph" can either be the case-insensitive name of a value in the <see cref="Glyph"/>
-        /// enum, or a single character representing the ASCII value of the glyph. ForeColor and
-        /// BackColor, if present, are the case-insensitive names of values in
-        /// <see cref="TerminalColors"/>.
+        /// Gets the code represented by the given character in given encoding.
         /// </summary>
-        /// <param name="text">The text to parse.</param>
-        /// <returns>A Character defined by the given text.</returns>
-        /// <exception cref="ArgumentNullException"><c>text</c> is null.</exception>
-        /// <exception cref="ArgumentException"><c>text</c> is empty or contains more than three words.</exception>
-        public static Character Parse(string text)
+        /// <param name="ascii"></param>
+        /// <param name="encoding"></param>
+        /// <returns></returns>
+        public static int Encode(char ascii, Encoding encoding)
         {
-            if (text == null) throw new ArgumentNullException("text");
-            if (text.Length == 0) throw new ArgumentException("Argument 'text' cannot be empty.");
-
-            text = text.Trim();
-
-            // separate out the colors and glyph
-            string[] parts = text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            // only supports three parts (max)
-            if (parts.Length > 3) throw new ArgumentException("Character.Parse() should be formatted \"Glyph\", \"ForeColor Glyph\", or \"ForeColor BackColor Glyph\".");
-
-            Glyph glyph;
-            TermColor foreColor = DefaultForeColor;
-            TermColor backColor = DefaultBackColor;
-
-            // parse the glyph
-            glyph = ParseGlyph(parts[parts.Length - 1]);
-
-            // parse the fore color
-            if (parts.Length > 1)
-            {
-                foreColor = TermColors.FromName(parts[0]);
-            }
-
-            // parse the back color
-            if (parts.Length > 2)
-            {
-                backColor = TermColors.FromName(parts[1]);
-            }
-
-            return new Character(glyph, foreColor, backColor);
-        }
-
-        public static Glyph ParseGlyph(string text)
-        {
-            if (text.Length == 1)
-            {
-                // a single character is assumed to be ascii
-                return ToGlyph(text[0]);
-            }
-            else
-            {
-                // multiple characters are the glyph enum names
-                return (Glyph)Enum.Parse(typeof(Glyph), text, true);
-            }
+            char[] buffer = { ascii };
+            return (int)(encoding.GetBytes(buffer)[0]);
         }
 
         /// <summary>
-        /// Gets the <see cref="Glyph"/> used to draw this Character.
+        /// Gets the code used to draw this Character.
         /// </summary>
-        public Glyph Glyph { get { return mGlyph; } }
+        public int Code { get { return mCode; } }
 
         /// <summary>
         /// Gets the foreground <see cref="Color"/> of this Character.
@@ -126,20 +77,20 @@ namespace Malison.Core
         }
 
         /// <summary>
-        /// Returns true if the <see cref="Glyph"/> for this Character is a non-visible
-        /// whitespace Glyph.
+        /// Returns true if the code for this Character is a non-visible
+        /// whitespace character.
         /// </summary>
-        public bool IsWhitespace { get { return mGlyph == Glyph.Space; } }
+        public bool IsWhitespace { get { return mCode == 0; } }
 
         /// <summary>
         /// Initializes a new Character.
         /// </summary>
-        /// <param name="glyph">Glyph used to draw the Character.</param>
+        /// <param name="code">Code used to draw the Character.</param>
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
         /// <param name="backColor">Background <see cref="TermColor"/> of the Character.</param>
-        public Character(Glyph glyph, TermColor foreColor, TermColor backColor)
+        public Character(int code, TermColor foreColor, TermColor backColor)
         {
-            mGlyph = glyph;
+            mCode = code;
             mBackColor = backColor;
             mForeColor = foreColor;
         }
@@ -147,10 +98,10 @@ namespace Malison.Core
         /// <summary>
         /// Initializes a new Character using the default background <see cref="TermColor"/>.
         /// </summary>
-        /// <param name="glyph">Glyph used to draw the Character.</param>
+        /// <param name="code">Code used to draw the Character.</param>
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
-        public Character(Glyph glyph, TermColor foreColor)
-            : this(glyph, foreColor, DefaultBackColor)
+        public Character(int code, TermColor foreColor)
+            : this(code, foreColor, DefaultBackColor)
         {
         }
 
@@ -158,32 +109,32 @@ namespace Malison.Core
         /// Initializes a new Character using the default background and foreground
         /// <see cref="TermColor"/>.
         /// </summary>
-        /// <param name="glyph">Glyph used to draw the Character.</param>
-        public Character(Glyph glyph)
-            : this(glyph, DefaultForeColor)
+        /// <param name="code">Code used to draw the Character.</param>
+        public Character(int code)
+            : this(code, DefaultForeColor)
         {
         }
 
         /// <summary>
         /// Initializes a new Character.
         /// </summary>
-        /// <param name="ascii">ASCII representation of the <see cref="Glyph"/> used
+        /// <param name="ascii">ASCII representation of the code used
         /// to draw the Character.</param>
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
         /// <param name="backColor">Background <see cref="TermColor"/> of the Character.</param>
         public Character(char ascii, TermColor foreColor, TermColor backColor)
-            : this(Character.ToGlyph(ascii), foreColor, backColor)
+            : this(Character.Encode(ascii), foreColor, backColor)
         {
         }
 
         /// <summary>
         /// Initializes a new Character using the default background <see cref="Color"/>.
         /// </summary>
-        /// <param name="ascii">ASCII representation of the <see cref="Glyph"/> used
+        /// <param name="ascii">ASCII representation of the code used
         /// to draw the Character.</param>
         /// <param name="foreColor">Foreground <see cref="TermColor"/> of the Character.</param>
         public Character(char ascii, TermColor foreColor)
-            : this(Character.ToGlyph(ascii), foreColor, DefaultBackColor)
+            : this(Character.Encode(ascii), foreColor, DefaultBackColor)
         {
         }
 
@@ -191,10 +142,10 @@ namespace Malison.Core
         /// Initializes a new Character using the default background and foreground
         /// <see cref="Color"/>.
         /// </summary>
-        /// <param name="ascii">ASCII representation of the <see cref="Glyph"/> used
+        /// <param name="ascii">ASCII representation of the code used
         /// to draw the Character.</param>
         public Character(char ascii)
-            : this(Character.ToGlyph(ascii), DefaultForeColor)
+            : this(Character.Encode(ascii), DefaultForeColor)
         {
         }
 
@@ -204,7 +155,7 @@ namespace Malison.Core
         /// <returns></returns>
         public override string ToString()
         {
-            return mGlyph.ToString();
+            return mCode.ToString();
         }
 
         /// <summary>
@@ -225,7 +176,7 @@ namespace Malison.Core
         /// <returns>An integer value that specifies the hash code for this Character.</returns>
         public override int GetHashCode()
         {
-            return mGlyph.GetHashCode() + mBackColor.GetHashCode() + mForeColor.GetHashCode();
+            return mCode.GetHashCode() + mBackColor.GetHashCode() + mForeColor.GetHashCode();
         }
 
         #region IEquatable<Character> Members
@@ -237,12 +188,12 @@ namespace Malison.Core
         /// <returns><c>true</c> if <c>other</c> is equivalent to this Character; otherwise, <c>false</c>.</returns>
         public bool Equals(Character other)
         {
-            return (mGlyph == other.mGlyph) && mBackColor.Equals(other.mBackColor) && mForeColor.Equals(other.mForeColor);
+            return (mCode == other.mCode) && mBackColor.Equals(other.mBackColor) && mForeColor.Equals(other.mForeColor);
         }
 
         #endregion
 
-        private Glyph mGlyph;
+        private int mCode;
         private TermColor mForeColor;
         private TermColor mBackColor;
     }

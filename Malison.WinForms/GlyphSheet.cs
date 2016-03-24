@@ -41,9 +41,8 @@ namespace Malison.WinForms
             Bitmap characterBitmap = new Bitmap(Width, Height);
             using (Graphics g = Graphics.FromImage(characterBitmap))
             {
-                byte glyph = (byte)character.Glyph;
-                int column = glyph % GlyphsPerRow;
-                int row = glyph / GlyphsPerRow;
+                int column = character.Code % GlyphsPerRow;
+                int row = character.Code / GlyphsPerRow;
 
                 Rectangle destRect = new Rectangle(0, 0, Width, Height);
 
@@ -68,7 +67,7 @@ namespace Malison.WinForms
         public void Draw(Graphics g, int x, int y, Character character)
         {
             // don't draw if it's a blank glyph
-            if (character.Glyph == Glyph.Space) return;
+            if (character.Code == 0) return;
 
             Bitmap characterBitmap = GetBitmap(character);
 
@@ -76,14 +75,32 @@ namespace Malison.WinForms
             g.DrawImageUnscaledAndClipped(characterBitmap, destRect);
         }
 
-        private GlyphSheet(Bitmap bitmap)
+        public GlyphSheet(Bitmap bitmap)
         {
             mBitmap = bitmap;
             mCharacterCache = new Dictionary<Character, Bitmap>();
+            GlyphsPerRow = 32;
+            GlyphsRows = 6;
         }
 
-        private const int GlyphsPerRow = 32;
-        private const int GlyphsRows = 6;
+        public GlyphSheet(Bitmap bitmap, int perRow, int rows)
+            :this(bitmap)
+        {
+            GlyphsPerRow = perRow;
+            GlyphsRows = rows;
+        }
+
+        public int GlyphsPerRow
+        {
+            get;
+            private set;
+        }
+
+        public int GlyphsRows
+        {
+            get;
+            private set;
+        }
 
         private static GlyphSheet sTerminal6x10;
         private static GlyphSheet sTerminal7x10;
