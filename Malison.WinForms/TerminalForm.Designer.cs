@@ -133,14 +133,14 @@ namespace Malison.WinForms
 
         #endregion
 
-        private Malison.WinForms.TerminalControl mTerminalControl;
-        private System.Windows.Forms.MenuStrip mMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem mExitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem m6x10ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem m7x10ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem m8x12ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem m10x12ToolStripMenuItem;
+        protected Malison.WinForms.TerminalControl mTerminalControl;
+        protected System.Windows.Forms.MenuStrip mMenuStrip;
+        protected System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        protected System.Windows.Forms.ToolStripMenuItem mExitToolStripMenuItem;
+        protected System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
+        protected System.Windows.Forms.ToolStripMenuItem m6x10ToolStripMenuItem;
+        protected System.Windows.Forms.ToolStripMenuItem m7x10ToolStripMenuItem;
+        protected System.Windows.Forms.ToolStripMenuItem m8x12ToolStripMenuItem;
+        protected System.Windows.Forms.ToolStripMenuItem m10x12ToolStripMenuItem;
     }
 }

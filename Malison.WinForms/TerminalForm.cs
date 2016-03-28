@@ -62,12 +62,12 @@ namespace Malison.WinForms
             ClientSize = new Size(terminalSize.Width, terminalSize.Height + mMenuStrip.Height);
         }
 
-        private void ExitToolStripMenuItem_Click(object sender, EventArgs e)
+        protected virtual void ExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void FontToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        protected virtual void FontToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             m6x10ToolStripMenuItem.Checked = (mTerminalControl.GlyphSheet == GlyphSheet.Terminal6x10);
             m7x10ToolStripMenuItem.Checked = (mTerminalControl.GlyphSheet == GlyphSheet.Terminal7x10);

@@ -102,6 +102,14 @@ namespace Malison.WinForms
             private set;
         }
 
+        public Bitmap Bitmap
+        {
+            get
+            {
+                return mBitmap;
+            }
+        }
+
         private static GlyphSheet sTerminal6x10;
         private static GlyphSheet sTerminal7x10;
         private static GlyphSheet sTerminal8x12;
