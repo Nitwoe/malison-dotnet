@@ -93,6 +93,7 @@ namespace Malison.Core
             mCode = code;
             mBackColor = backColor;
             mForeColor = foreColor;
+            mHash = mCode.GetHashCode() + mBackColor.GetHashCode() + mForeColor.GetHashCode();
         }
 
         /// <summary>
@@ -176,7 +177,7 @@ namespace Malison.Core
         /// <returns>An integer value that specifies the hash code for this Character.</returns>
         public override int GetHashCode()
         {
-            return mCode.GetHashCode() + mBackColor.GetHashCode() + mForeColor.GetHashCode();
+            return mHash;
         }
 
         #region IEquatable<Character> Members
@@ -188,12 +189,13 @@ namespace Malison.Core
         /// <returns><c>true</c> if <c>other</c> is equivalent to this Character; otherwise, <c>false</c>.</returns>
         public bool Equals(Character other)
         {
-            return (mCode == other.mCode) && mBackColor.Equals(other.mBackColor) && mForeColor.Equals(other.mForeColor);
+            return this.mHash.Equals(other.GetHashCode());
         }
 
         #endregion
 
         private int mCode;
+        private int mHash;
         private TermColor mForeColor;
         private TermColor mBackColor;
     }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SFML.Graphics;
 using Malison.Core;
+using SFML.Window;
 
 namespace Malison.SFML
 {
@@ -49,15 +50,12 @@ namespace Malison.SFML
 
             Sprite sprite = GetSprite(character);
 
-            sprite.Position = new global::SFML.Window.Vector2f(x * Width, y * Height);
-
-            if(!character.BackColor.Equals(TermColor.Black))
-            {
-                RectangleShape rs = new RectangleShape(new global::SFML.Window.Vector2f(Width, Height));
-                rs.Position = new global::SFML.Window.Vector2f(x * Width, y * Height);
-                rs.FillColor = character.BackColor.ToSFMLColor();
-                window.Draw(rs);
-            }
+            sprite.Position = new Vector2f(x * Width, y * Height);
+            
+            RectangleShape rs = new RectangleShape(new Vector2f(Width, Height));
+            rs.Position = new Vector2f(x * Width, y * Height);
+            rs.FillColor = character.BackColor.ToSFMLColor();
+            window.Draw(rs);
 
             window.Draw(sprite);
         }
@@ -66,6 +64,7 @@ namespace Malison.SFML
         {
             Sprite sprite = null;
 
+            //If sprite was cached, return it
             if(spriteCache.TryGetValue(character, out sprite))
             {
                 return sprite;

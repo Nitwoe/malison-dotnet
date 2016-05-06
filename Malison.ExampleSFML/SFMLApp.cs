@@ -56,6 +56,7 @@ namespace Malison.ExampleSFML
         {
             while(Window.IsOpen())
             {
+                // Dispatch events to comply with native event loop
                 Window.DispatchEvents();
                 Update();
                 Render();
@@ -144,7 +145,7 @@ namespace Malison.ExampleSFML
 
         private void Render()
         {
-            Window.Clear();
+            Window.Clear(Color.Black);
 
             for (int i = 0; i < Terminal.Size.X; i++)
             {
