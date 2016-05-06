@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Malison.WinForms", "Malison
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Malison.ExampleApp", "Malison.ExampleApp\Malison.ExampleApp.csproj", "{D1885C48-38F0-45ED-BC1D-CC44D1FA690D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Malison.SFML", "Malison.SFML\Malison.SFML.csproj", "{1E5C1874-19B0-4DF1-AC11-CF178DA8B7C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Malison.ExampleSFML", "Malison.ExampleSFML\Malison.ExampleSFML.csproj", "{91CF6B38-AFB3-4EA5-98A0-69D27C146825}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +31,19 @@ Global
 		{D1885C48-38F0-45ED-BC1D-CC44D1FA690D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1885C48-38F0-45ED-BC1D-CC44D1FA690D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1885C48-38F0-45ED-BC1D-CC44D1FA690D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E5C1874-19B0-4DF1-AC11-CF178DA8B7C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E5C1874-19B0-4DF1-AC11-CF178DA8B7C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E5C1874-19B0-4DF1-AC11-CF178DA8B7C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E5C1874-19B0-4DF1-AC11-CF178DA8B7C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91CF6B38-AFB3-4EA5-98A0-69D27C146825}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91CF6B38-AFB3-4EA5-98A0-69D27C146825}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91CF6B38-AFB3-4EA5-98A0-69D27C146825}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91CF6B38-AFB3-4EA5-98A0-69D27C146825}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal
