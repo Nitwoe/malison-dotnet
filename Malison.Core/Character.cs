@@ -93,7 +93,7 @@ namespace Malison.Core
             mCode = code;
             mBackColor = backColor;
             mForeColor = foreColor;
-            mHash = mCode.GetHashCode() + mBackColor.GetHashCode() + mForeColor.GetHashCode();
+            mHash = mCode.GetHashCode() + mBackColor.GetHashCode()*2 + mForeColor.GetHashCode()*3;
         }
 
         /// <summary>
