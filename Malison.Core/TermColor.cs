@@ -103,6 +103,14 @@ namespace Malison.Core
 
         #region Basic color helpers
 
+        public static TermColor Transparent
+        {
+            get
+            {
+                return new TermColor(0, 0, 0, 0);
+            }
+        }
+
         public static TermColor Black
         {
             get

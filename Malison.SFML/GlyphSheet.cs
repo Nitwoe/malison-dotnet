@@ -12,6 +12,7 @@ namespace Malison.SFML
     public class GlyphSheet
     {
         private Dictionary<Character, Sprite> spriteCache;
+        private Dictionary<Character, RectangleShape> shapeCache;
 
         public Texture SpriteSheet
         {
@@ -41,6 +42,7 @@ namespace Malison.SFML
             GlyphsRows = rows;
 
             spriteCache = new Dictionary<Character, Sprite>();
+            shapeCache = new Dictionary<Character, RectangleShape>();
         }
 
         public void Draw(RenderWindow window, int x, int y, Character character)
@@ -52,12 +54,32 @@ namespace Malison.SFML
 
             sprite.Position = new Vector2f(x * Width, y * Height);
             
-            RectangleShape rs = new RectangleShape(new Vector2f(Width, Height));
-            rs.Position = new Vector2f(x * Width, y * Height);
-            rs.FillColor = character.BackColor.ToSFMLColor();
-            window.Draw(rs);
+            if(!character.BackColor.Equals(TermColor.Transparent))
+            {
+                RectangleShape background = GetBackground(character);
+                background.Position = sprite.Position;
 
+                window.Draw(background);
+            }
+            
             window.Draw(sprite);
+        }
+
+        private RectangleShape GetBackground(Character character)
+        {
+            RectangleShape shape = null;
+
+            if(shapeCache.TryGetValue(character, out shape))
+            {
+                return shape;
+            }
+
+            shape = new RectangleShape(new Vector2f(Width, Height));
+            shape.FillColor = character.BackColor.ToSFMLColor();
+
+            shapeCache[character] = shape;
+
+            return shape;
         }
 
         private Sprite GetSprite(Character character)
